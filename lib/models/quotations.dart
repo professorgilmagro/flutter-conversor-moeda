@@ -20,14 +20,14 @@ class Quotation {
   }
 }
 
-Future<Map<String, Quotation>> fetchQuotations() async {
+Future<Map<Currency, Quotation>> fetchQuotations() async {
   final data = await Api().getData();
-  Map<String, Quotation> items = Map();
+  Map<Currency, Quotation> items = Map();
 
   dynamic currencies = data["results"]["currencies"];
   for (Currency type in Currency.values) {
     String key = type.toString().split('.').last;
-    items.putIfAbsent(key, () => Quotation.fromJson(currencies[type], key));
+    items.putIfAbsent(type, () => Quotation.fromJson(currencies[key], key));
   }
 
   return items;

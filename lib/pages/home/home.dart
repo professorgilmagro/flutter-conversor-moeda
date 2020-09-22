@@ -1,5 +1,7 @@
 import 'package:conversor_moedas/models/quotations.dart';
-import 'package:conversor_moedas/pages/home/build_view.dart';
+import 'package:conversor_moedas/pages/home/views/content.dart';
+import 'package:conversor_moedas/pages/home/views/error.dart';
+import 'package:conversor_moedas/pages/home/views/loading.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -8,13 +10,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  Future<Map<String, Quotation>> quotations;
   AnimationController animationController;
 
   @override
   void initState() {
     super.initState();
-    quotations = fetchQuotations();
 
     animationController = AnimationController(
       vsync: this,
@@ -26,21 +26,33 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    List loadingStates = [ConnectionState.none, ConnectionState.waiting];
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        shadowColor: Colors.amber,
-        title: Text(
-          '\$ Conversor de moedas \$',
-          style: TextStyle(color: Colors.yellow, fontSize: 16),
-        ),
         backgroundColor: Colors.black,
-        centerTitle: true,
-      ),
-      body: FutureBuilder<Map>(
-          future: quotations,
-          builder: (context, snapshot) =>
-              BuildHomeView(animationController, snapshot, quotations).build()),
-    );
+        appBar: AppBar(
+          shadowColor: Colors.amber,
+          title: Text(
+            '\$ Conversor de moedas \$',
+            style: TextStyle(color: Colors.yellow, fontSize: 16),
+          ),
+          backgroundColor: Colors.black,
+          centerTitle: true,
+        ),
+        body: FutureBuilder<Map>(
+          future: fetchQuotations(),
+          builder: (context, snapshot) {
+            if (loadingStates.contains(snapshot.connectionState)) {
+              return HomeLoadingView(animationController).build();
+            }
+
+            if (snapshot.hasError) {
+              String message = "Erro na obtenção dos dados no servidor!";
+              return HomeErrorView(message).build();
+            }
+
+            return HomeContentView(snapshot.data).build();
+          },
+        ));
   }
 }

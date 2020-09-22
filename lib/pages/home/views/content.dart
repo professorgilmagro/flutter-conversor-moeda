@@ -5,20 +5,46 @@ class HomeContentView {
   TextEditingController realController = TextEditingController();
   TextEditingController euroController = TextEditingController();
   TextEditingController dolarController = TextEditingController();
-  Calculator calculator;
+  Calculator calc;
 
-  HomeContentView(this.calculator);
-
-  void _onChangedReal() {
-    euroController.text = "";
+  HomeContentView(quotations) {
+    this.calc = Calculator(quotations);
   }
 
-  void _onChangedEuro() {
+  void _cleanAll() {
+    realController.text = "";
     euroController.text = "";
+    dolarController.text = "";
   }
 
-  void _onChangedDolar() {
-    euroController.text = "";
+  void _realChanged(String text) {
+    if (text.isEmpty) {
+      return _cleanAll();
+    }
+
+    double value = double.parse(text);
+    dolarController.text = calc.dolarFromReal(value).toStringAsPrecision(3);
+    euroController.text = calc.euroFromReal(value).toStringAsPrecision(3);
+  }
+
+  void _euroChanged(String text) {
+    if (text.isEmpty) {
+      return _cleanAll();
+    }
+
+    double value = double.parse(text);
+    dolarController.text = calc.dolarFromEuro(value).toStringAsFixed(3);
+    realController.text = calc.realFromEuro(value).toStringAsFixed(3);
+  }
+
+  void _dolarChanged(String text) {
+    if (text.isEmpty) {
+      return _cleanAll();
+    }
+
+    double value = double.parse(text);
+    euroController.text = calc.euroFromDolar(value).toStringAsFixed(3);
+    realController.text = calc.realFromDolar(value).toStringAsFixed(3);
   }
 
   Widget build() {
@@ -35,17 +61,17 @@ class HomeContentView {
                 prefix: 'R\$',
                 top: 10,
                 controller: realController,
-                onChange: _onChangedReal),
+                handleChange: _realChanged),
             _renderTextField('Dólares',
                 prefix: 'US\$',
                 top: 20,
                 controller: dolarController,
-                onChange: _onChangedDolar),
+                handleChange: _dolarChanged),
             _renderTextField('Euros',
                 prefix: '€',
                 top: 20,
                 controller: euroController,
-                onChange: _onChangedEuro),
+                handleChange: _euroChanged),
           ],
         ));
   }
@@ -54,16 +80,16 @@ class HomeContentView {
       {String prefix,
       double top,
       double bottom,
-      Function onChange,
+      Function handleChange,
       TextEditingController controller}) {
     return Padding(
         padding: EdgeInsets.fromLTRB(0, top ?? 0, 0, bottom ?? 0),
         child: TextField(
             controller: controller,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: handleChange,
             style: TextStyle(color: Colors.white, fontSize: 25),
             cursorColor: Colors.amber,
-            onChanged: onChange,
             decoration: InputDecoration(
                 labelText: label,
                 prefixText: "$prefix ",
