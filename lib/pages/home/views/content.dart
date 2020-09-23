@@ -1,5 +1,5 @@
 import 'package:conversor_moedas/helpers/builder.dart';
-import 'package:conversor_moedas/helpers/calculator.dart';
+import 'package:conversor_moedas/helpers/converter.dart';
 import 'package:flutter/material.dart';
 
 class HomeContentView {
