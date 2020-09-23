@@ -1,9 +1,9 @@
 import 'package:conversor_moedas/models/quotations.dart';
 
-class Calculator {
+class CurrencyConverter {
   Map<Currency, Quotation> quotations;
 
-  Calculator(this.quotations);
+  CurrencyConverter(this.quotations);
 
   Quotation getDolarQuotation() => getQuotation(Currency.USD);
 

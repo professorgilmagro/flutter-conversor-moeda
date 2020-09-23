@@ -1,20 +1,21 @@
+import 'package:conversor_moedas/helpers/builder.dart';
 import 'package:conversor_moedas/helpers/calculator.dart';
 import 'package:flutter/material.dart';
 
 class HomeContentView {
-  TextEditingController realController = TextEditingController();
-  TextEditingController euroController = TextEditingController();
-  TextEditingController dolarController = TextEditingController();
-  Calculator calc;
+  TextEditingController realControl = TextEditingController();
+  TextEditingController euroControl = TextEditingController();
+  TextEditingController dolarControl = TextEditingController();
+  CurrencyConverter converter;
 
   HomeContentView(quotations) {
-    this.calc = Calculator(quotations);
+    this.converter = CurrencyConverter(quotations);
   }
 
   void _cleanAll() {
-    realController.text = "";
-    euroController.text = "";
-    dolarController.text = "";
+    realControl.text = "";
+    euroControl.text = "";
+    dolarControl.text = "";
   }
 
   void _realChanged(String text) {
@@ -23,8 +24,8 @@ class HomeContentView {
     }
 
     double value = double.parse(text);
-    dolarController.text = calc.dolarFromReal(value).toStringAsPrecision(3);
-    euroController.text = calc.euroFromReal(value).toStringAsPrecision(3);
+    dolarControl.text = converter.dolarFromReal(value).toStringAsPrecision(3);
+    euroControl.text = converter.euroFromReal(value).toStringAsPrecision(3);
   }
 
   void _euroChanged(String text) {
@@ -33,8 +34,8 @@ class HomeContentView {
     }
 
     double value = double.parse(text);
-    dolarController.text = calc.dolarFromEuro(value).toStringAsFixed(3);
-    realController.text = calc.realFromEuro(value).toStringAsFixed(3);
+    dolarControl.text = converter.dolarFromEuro(value).toStringAsFixed(3);
+    realControl.text = converter.realFromEuro(value).toStringAsFixed(3);
   }
 
   void _dolarChanged(String text) {
@@ -43,8 +44,8 @@ class HomeContentView {
     }
 
     double value = double.parse(text);
-    euroController.text = calc.euroFromDolar(value).toStringAsFixed(3);
-    realController.text = calc.realFromDolar(value).toStringAsFixed(3);
+    euroControl.text = converter.euroFromDolar(value).toStringAsFixed(3);
+    realControl.text = converter.realFromDolar(value).toStringAsFixed(3);
   }
 
   Widget build() {
@@ -57,43 +58,22 @@ class HomeContentView {
                 padding: EdgeInsets.all(20),
                 child: Icon(Icons.monetization_on,
                     color: Colors.amber, size: 100)),
-            _renderTextField('Reais',
+            BuildTextField('Reais',
                 prefix: 'R\$',
                 top: 10,
-                controller: realController,
+                controller: realControl,
                 handleChange: _realChanged),
-            _renderTextField('Dólares',
+            BuildTextField('Dólares',
                 prefix: 'US\$',
                 top: 20,
-                controller: dolarController,
+                controller: dolarControl,
                 handleChange: _dolarChanged),
-            _renderTextField('Euros',
+            BuildTextField('Euros',
                 prefix: '€',
                 top: 20,
-                controller: euroController,
+                controller: euroControl,
                 handleChange: _euroChanged),
           ],
         ));
-  }
-
-  Widget _renderTextField(String label,
-      {String prefix,
-      double top,
-      double bottom,
-      Function handleChange,
-      TextEditingController controller}) {
-    return Padding(
-        padding: EdgeInsets.fromLTRB(0, top ?? 0, 0, bottom ?? 0),
-        child: TextField(
-            controller: controller,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: handleChange,
-            style: TextStyle(color: Colors.white, fontSize: 25),
-            cursorColor: Colors.amber,
-            decoration: InputDecoration(
-                labelText: label,
-                prefixText: "$prefix ",
-                border: OutlineInputBorder(),
-                labelStyle: TextStyle(color: Colors.amberAccent))));
   }
 }
