@@ -24,8 +24,8 @@ class HomeContentView {
     }
 
     double value = double.parse(text);
-    dolarControl.text = converter.dolarFromReal(value).toStringAsPrecision(3);
-    euroControl.text = converter.euroFromReal(value).toStringAsPrecision(3);
+    dolarControl.text = converter.realToDolar(value).toStringAsPrecision(3);
+    euroControl.text = converter.realToEuro(value).toStringAsPrecision(3);
   }
 
   void _euroChanged(String text) {
@@ -34,8 +34,8 @@ class HomeContentView {
     }
 
     double value = double.parse(text);
-    dolarControl.text = converter.dolarFromEuro(value).toStringAsFixed(3);
-    realControl.text = converter.realFromEuro(value).toStringAsFixed(3);
+    dolarControl.text = converter.euroToDolar(value).toStringAsFixed(3);
+    realControl.text = converter.euroToReais(value).toStringAsFixed(3);
   }
 
   void _dolarChanged(String text) {
@@ -44,8 +44,8 @@ class HomeContentView {
     }
 
     double value = double.parse(text);
-    euroControl.text = converter.euroFromDolar(value).toStringAsFixed(3);
-    realControl.text = converter.realFromDolar(value).toStringAsFixed(3);
+    euroControl.text = converter.dolarToEuro(value).toStringAsFixed(3);
+    realControl.text = converter.dolarToReais(value).toStringAsFixed(3);
   }
 
   Widget build() {
